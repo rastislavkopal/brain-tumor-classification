@@ -6,6 +6,7 @@ Created on Fri Oct 16 22:50:03 2020
 """
 import os
 import cv2
+import time
 import itertools
 import numpy as np
 #import seaborn as sns
@@ -17,9 +18,11 @@ import matplotlib.pyplot as plt
 
 import tensorflow as tf
 
-from keras.optimizers import adam
+from keras.optimizers import adam, RMSprop
 #from keras.utils import to_categorical
 from sklearn.metrics import confusion_matrix
+
+from keras.applications.resnet50 import ResNet50
 from keras.callbacks import EarlyStopping
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
@@ -36,15 +39,16 @@ config = tf.config.experimental.set_memory_growth(physical_devices[0], True)
 #splitter.ratio('/home/rastislav/Desktop/bp/brain_tumor_dataset/dataset-bigger/', output="/home/rastislav/Desktop/bp/brain_tumor_dataset/dataset-bigger-spl/", seed=1337, ratio=(.7, 0.2,0.1))
 
 
-#TRAIN_DIR='/home/rastislav/Desktop/bp/brain_tumor_dataset/dataset/train/'
-#TEST_DIR='/home/rastislav/Desktop/bp/brain_tumor_dataset/dataset/test/'
-#VAL_DIR='/home/rastislav/Desktop/bp/brain_tumor_dataset/dataset/val/'
-TRAIN_DIR='/home/rastislav/Desktop/bp/brain_tumor_dataset/dataset-bigger-spl/train/'
-TEST_DIR='/home/rastislav/Desktop/bp/brain_tumor_dataset/dataset-bigger-spl/test/'
-VAL_DIR='/home/rastislav/Desktop/bp/brain_tumor_dataset/dataset-bigger-spl/val/'
-IMG_SIZE=(128,128)
-EPOCHS=30
+TRAIN_DIR='/home/rastislav/Desktop/bp/brain_tumor_dataset/dataset/train/'
+TEST_DIR='/home/rastislav/Desktop/bp/brain_tumor_dataset/dataset/test/'
+VAL_DIR='/home/rastislav/Desktop/bp/brain_tumor_dataset/dataset/val/'
+#TRAIN_DIR='/home/rastislav/Desktop/bp/brain_tumor_dataset/dataset-bigger-spl/train/'
+#TEST_DIR='/home/rastislav/Desktop/bp/brain_tumor_dataset/dataset-bigger-spl/test/'
+#VAL_DIR='/home/rastislav/Desktop/bp/brain_tumor_dataset/dataset-bigger-spl/val/'
+IMG_SIZE=(64,64)
+EPOCHS=50
 RANDOM_SEED=123
+batch_size = 10
 
 
 """
@@ -117,7 +121,7 @@ if K.image_data_format() == 'channels_first':
 else:
     input_shape = (IMG_SIZE[0], IMG_SIZE[1], 3)
 
-model = Sequential()
+#model = Sequential()
 
 #model.add(Conv2D(32, (7,7), input_shape=input_shape))
 #model.add(Activation('relu'))
@@ -126,29 +130,48 @@ model = Sequential()
 #model.add(Conv2D(32, (5,5), padding="same", activation="relu"))
 #model.add(MaxPooling2D(pool_size=(2, 2)))
 
-model.add(Conv2D(32, (3, 3), padding="same", activation="relu"))
-model.add(MaxPooling2D(pool_size=(2, 2)))
+#model.add(Conv2D(32, (3, 3), padding="same", activation="relu"))
+#model.add(MaxPooling2D(pool_size=(2, 2)))
 
 
-model.add(Conv2D(64, (3, 3), padding="same", activation="relu"))
-model.add(MaxPooling2D(pool_size=(2, 2)))
+#model.add(Conv2D(64, (3, 3), padding="same", activation="relu"))
+#model.add(MaxPooling2D(pool_size=(2, 2)))
 
-model.add(Conv2D(128, (3, 3), padding="same", activation="relu"))
-model.add(MaxPooling2D(pool_size=(2, 2)))
+#model.add(Conv2D(128, (3, 3), padding="same", activation="relu"))
+#model.add(MaxPooling2D(pool_size=(2, 2)))
 
+#ResNet50_weight_path = '../input/keras-pretrained-models/resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5'
+base_model_resnet = ResNet50(
+    weights="imagenet",
+    include_top=False, 
+    input_shape=input_shape
+    )
+
+model = Sequential()
+model.add(base_model_resnet)
+model.add(Dropout(0.3))
 model.add(Flatten())
-model.add(Dense(64))
-model.add(Activation('relu'))
 model.add(Dropout(0.5))
 model.add(Dense(NUM_CLASSES, activation='sigmoid'))
 
+model.layers[0].trainable = False
+
+
 model.compile(loss='binary_crossentropy',
-              optimizer='adam',
+              optimizer=RMSprop(lr=1e-4),
               metrics=['accuracy'])
 
-
-
-batch_size = 12
+model.summary()
+"""
+model.compile(
+    loss='binary_crossentropy',
+    ptimizer=keras.optimizers.Adam(
+                            lr=0.0003, beta_1=0.9,
+                            beta_2=0.999, epsilon=None,
+                            ecay=0.0, amsgrad=False),
+    metrics=["accuracy"]
+    )
+"""
 
 # this is the augmentation configuration we will use for training
 train_datagen = ImageDataGenerator(
@@ -204,22 +227,22 @@ es = EarlyStopping(
     patience=6
 )
 
-model.summary()
 
-
+start = time.time()
 
 history = model.fit_generator(
         train_generator,
-   #     steps_per_epoch=120,
+        steps_per_epoch=50,
         epochs=EPOCHS,
         validation_data=validation_generator,
-    #    validation_steps=25,
+        validation_steps=30,
         callbacks=[es]
         )
 
 model.save_weights('first_try.h5')  # always save your weights after training or during training
 
-
+end = time.time()
+print(end - start)
 
 # predict test set
 predictions = model.predict(x=X_test)
@@ -297,7 +320,7 @@ def plotLearningHistory():
 plotLearningHistory()
 
 
-cm_plot_labels = ['NO','YES ']
+cm_plot_labels = ['(0,NO)','(1,YES)']
 cm = confusion_matrix(y_true=y_test, y_pred=np.round(predictions))
 plotConfusionMatrix(cm=cm, classes=cm_plot_labels, title='Confusion Matrix- Test data')
 
