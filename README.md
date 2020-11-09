@@ -1,6 +1,5 @@
 # brain-tumor-pretrained
-# brain-tumor-fs
-<h1>Brain tumor detection using VGG16 and smaller dataset</h1>
+<h2>Brain tumor detection using VGG16 and smaller dataset</h2>
 
 <p>Number of images:<p>
 <img src="https://raw.githubusercontent.com/rastislavkopal/brain-tumor-pretrained/master/graphs/num_images.png" alt="Number of images" width="auto" height="300"> 
@@ -31,7 +30,7 @@
 
 <hr><hr>
 
-<h1>Brain tumor v2: using bigger dataset</h1>
+<h2>Brain tumor v2: using bigger dataset</h2>
 
 <p>Number of images:<p>
 <img src="https://raw.githubusercontent.com/rastislavkopal/brain-tumor-pretrained/master/graphs/num_images_bt.png" 
