@@ -16,7 +16,8 @@
  </ul>
  
  <p>
-
+Epoch 42/120
+50/50 [==============================] - 8s 153ms/step - loss: 0.4550 - accuracy: 0.7721 - val_loss: 0.0277 - val_accuracy: 0.9742
 </p>
 <br>
 <h3>Training vs Validation accuracy</h3>
@@ -27,6 +28,9 @@
 <img src="https://raw.githubusercontent.com/rastislavkopal/brain-tumor-pretrained/master/graphs/cm_val_data.png" alt="" width="auto" height="300"> 
 <h3>confusion matrix for test set</h3>
 <img src="https://raw.githubusercontent.com/rastislavkopal/brain-tumor-pretrained/master/graphs/cm_test_data.png" alt="" width="auto" height="300"> 
+
+<b>loss at test dataset: 0.42<br>
+accuracy at test dataset: 0.85 </b>
 
 <hr><hr>
 
@@ -53,3 +57,6 @@ Epoch 10/120
 <img src="https://raw.githubusercontent.com/rastislavkopal/brain-tumor-pretrained/master/graphs/cm_val_data_bt.png" alt="" width="auto" height="300"> 
 <h3>confusion matrix for test set</h3>
 <img src="https://raw.githubusercontent.com/rastislavkopal/brain-tumor-pretrained/master/graphs/cm_test_data_bt.png" alt="" width="auto" height="300"> 
+
+<b>loss at test dataset: 0.46<br>
+accuracy at test dataset: 0.85</b>
