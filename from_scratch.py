@@ -9,8 +9,6 @@ import cv2
 import time
 import itertools
 import numpy as np
-#import seaborn as sns
-#from PIL import Image
 from tqdm import tqdm
 import splitfolders as splitter
 import matplotlib.pyplot as plt
@@ -18,16 +16,14 @@ import matplotlib.pyplot as plt
 
 import tensorflow as tf
 
-from keras.optimizers import adam, RMSprop
+from keras.optimizers import Adam, RMSprop
 #from keras.utils import to_categorical
 from sklearn.metrics import confusion_matrix
-
-from keras.applications.resnet50 import ResNet50
+from keras.applications.vgg16 import VGG16
 from keras.callbacks import EarlyStopping
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
-from keras.layers import Conv2D, MaxPooling2D
-from keras.layers import Dropout, Activation, Flatten, Dense
+from keras.layers import Conv2D, MaxPooling2D, Dropout, Activation, Flatten, Dense
 from keras import backend as K
 
 print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
@@ -39,16 +35,16 @@ config = tf.config.experimental.set_memory_growth(physical_devices[0], True)
 #splitter.ratio('/home/rastislav/Desktop/bp/brain_tumor_dataset/dataset-bigger/', output="/home/rastislav/Desktop/bp/brain_tumor_dataset/dataset-bigger-spl/", seed=1337, ratio=(.7, 0.2,0.1))
 
 
-TRAIN_DIR='/home/rastislav/Desktop/bp/brain_tumor_dataset/dataset/train/'
-TEST_DIR='/home/rastislav/Desktop/bp/brain_tumor_dataset/dataset/test/'
-VAL_DIR='/home/rastislav/Desktop/bp/brain_tumor_dataset/dataset/val/'
-#TRAIN_DIR='/home/rastislav/Desktop/bp/brain_tumor_dataset/dataset-bigger-spl/train/'
-#TEST_DIR='/home/rastislav/Desktop/bp/brain_tumor_dataset/dataset-bigger-spl/test/'
-#VAL_DIR='/home/rastislav/Desktop/bp/brain_tumor_dataset/dataset-bigger-spl/val/'
-IMG_SIZE=(64,64)
-EPOCHS=50
+#TRAIN_DIR='/home/rastislav/Desktop/bp/brain_tumor_dataset/dataset/train/'
+#TEST_DIR='/home/rastislav/Desktop/bp/brain_tumor_dataset/dataset/test/'
+#VAL_DIR='/home/rastislav/Desktop/bp/brain_tumor_dataset/dataset/val/'
+TRAIN_DIR='/home/rastislav/Desktop/bp/brain_tumor_dataset/dataset-bigger-spl/train/'
+TEST_DIR='/home/rastislav/Desktop/bp/brain_tumor_dataset/dataset-bigger-spl/test/'
+VAL_DIR='/home/rastislav/Desktop/bp/brain_tumor_dataset/dataset-bigger-spl/val/'
+IMG_SIZE=(224,224)
+EPOCHS=120
 RANDOM_SEED=123
-batch_size = 10
+batch_size = 6
 
 
 """
@@ -107,48 +103,25 @@ def imageClassesOrganization():
 
 imageClassesOrganization()
 
-#plt.imshow(X_train[81])
-#print(y_train[81])
 
 
 ######################################## Creating model ##########################
-train_dataset = tf.data.Dataset.from_tensor_slices((X_train, y_train))
-test_dataset = tf.data.Dataset.from_tensor_slices((X_test, y_test))
-val_dataset = tf.data.Dataset.from_tensor_slices((X_val, y_val))
 
 if K.image_data_format() == 'channels_first':
     input_shape = (3, IMG_SIZE[0], IMG_SIZE[1])
 else:
     input_shape = (IMG_SIZE[0], IMG_SIZE[1], 3)
 
-#model = Sequential()
-
-#model.add(Conv2D(32, (7,7), input_shape=input_shape))
-#model.add(Activation('relu'))
-#model.add(MaxPooling2D(pool_size=(2, 2)))
-
-#model.add(Conv2D(32, (5,5), padding="same", activation="relu"))
-#model.add(MaxPooling2D(pool_size=(2, 2)))
-
-#model.add(Conv2D(32, (3, 3), padding="same", activation="relu"))
-#model.add(MaxPooling2D(pool_size=(2, 2)))
-
-
-#model.add(Conv2D(64, (3, 3), padding="same", activation="relu"))
-#model.add(MaxPooling2D(pool_size=(2, 2)))
-
-#model.add(Conv2D(128, (3, 3), padding="same", activation="relu"))
-#model.add(MaxPooling2D(pool_size=(2, 2)))
-
-#ResNet50_weight_path = '../input/keras-pretrained-models/resnet50_weights_tf_dim_ordering_tf_kernels_notop.h5'
-base_model_resnet = ResNet50(
+#vgg16_weight_path = '../input/keras-pretrained-models/vgg16_weights_tf_dim_ordering_tf_kernels_notop.h5'
+base_model = VGG16(
+ #   weights=vgg16_weight_path,
     weights="imagenet",
     include_top=False, 
-    input_shape=input_shape
+    input_shape=IMG_SIZE + (3,)
     )
 
 model = Sequential()
-model.add(base_model_resnet)
+model.add(base_model)
 model.add(Dropout(0.3))
 model.add(Flatten())
 model.add(Dropout(0.5))
@@ -161,17 +134,18 @@ model.compile(loss='binary_crossentropy',
               optimizer=RMSprop(lr=1e-4),
               metrics=['accuracy'])
 
-model.summary()
 """
 model.compile(
     loss='binary_crossentropy',
-    ptimizer=keras.optimizers.Adam(
-                            lr=0.0003, beta_1=0.9,
-                            beta_2=0.999, epsilon=None,
-                            ecay=0.0, amsgrad=False),
+    optimizer=Adam(
+                lr=0.0003,
+                beta_1=0.9,
+                beta_2=0.999, 
+                amsgrad=False),
     metrics=["accuracy"]
     )
 """
+model.summary()
 
 # this is the augmentation configuration we will use for training
 train_datagen = ImageDataGenerator(
@@ -224,7 +198,7 @@ test_generator = test_datagen.flow_from_directory(
 es = EarlyStopping(
     monitor='val_accuracy', 
     mode='max',
-    patience=6
+    patience=9,
 )
 
 
@@ -242,7 +216,7 @@ history = model.fit_generator(
 model.save_weights('first_try.h5')  # always save your weights after training or during training
 
 end = time.time()
-print(end - start)
+print("Time needed for training: ", end - start, "s.")
 
 # predict test set
 predictions = model.predict(x=X_test)
@@ -253,11 +227,6 @@ predictionsVal = model.predict(x=X_val)
     Plot confusion matrix
 """
 def plotConfusionMatrix(cm, classes,normalize=False,title='Confusion matrix',cmap=plt.cm.Blues):
-    count_wrong_predict = 0
-    for i in range(0,predictions.size):
-        if (predictions[i] != y_test[i]):
-            count_wrong_predict+=1
-    print("Wrong predictions: ", count_wrong_predict, "  of total: ", len(y_test) ,". Accuracy: ", (len(y_test) -count_wrong_predict)/len(y_test))
     plt.figure()
     plt.imshow(cm,interpolation='nearest',cmap=plt.cm.Blues)
     plt.title(title)
@@ -318,6 +287,11 @@ def plotLearningHistory():
 
 
 plotLearningHistory()
+
+## evaluate test dataset
+loss, acc = model.evaluate(test_generator)  # returns loss and metrics
+print("loss at test dataset: %.2f" % loss)
+print("accuracy at test dataset: %.2f" % acc)
 
 
 cm_plot_labels = ['(0,NO)','(1,YES)']
