@@ -5,7 +5,7 @@
 <img src="https://raw.githubusercontent.com/rastislavkopal/brain-tumor-pretrained/master/graphs/num_images.png" alt="Number of images" width="auto" height="300"> 
 
 <h2>Model architecture</h2>
-<p>Img target_size=[214,214]</p>
+<p>Img target_size=[128,128]</p>
 <p>Sequential model with layers:</p>
 <ul>
   <li>VGG16 base_model with weights="imagenet"</li>
