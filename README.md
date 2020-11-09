@@ -22,7 +22,7 @@
 <h3>Training vs Validation accuracy</h3>
 <img src="https://raw.githubusercontent.com/rastislavkopal/brain-tumor-pretrained/master/graphs/accuracy.png" alt="" width="auto" height="300"> 
 <h3>Training vs Validation loss</h3>
-<img src="" alt="https://raw.githubusercontent.com/rastislavkopal/brain-tumor-pretrained/master/graphs/loss_function.png" width="auto" height="300"> 
+<img src="https://raw.githubusercontent.com/rastislavkopal/brain-tumor-pretrained/master/graphs/loss_function.png" alt="" width="auto" height="300"> 
 <h3>confusion matrix for validation set</h3>
 <img src="https://raw.githubusercontent.com/rastislavkopal/brain-tumor-pretrained/master/graphs/cm_val_data.png" alt="" width="auto" height="300"> 
 <h3>confusion matrix for test set</h3>
@@ -48,7 +48,7 @@ Epoch 10/120
 <h3>Training vs Validation accuracy</h3>
 <img src="https://raw.githubusercontent.com/rastislavkopal/brain-tumor-pretrained/master/graphs/accuracy_bt.png" alt="" width="auto" height="300"> 
 <h3>Training vs Validation loss</h3>
-<img src="" alt="https://raw.githubusercontent.com/rastislavkopal/brain-tumor-pretrained/master/graphs/loss_function_bt.png" width="auto" height="300"> 
+<img src="https://raw.githubusercontent.com/rastislavkopal/brain-tumor-pretrained/master/graphs/loss_function_bt.png" alt="" width="auto" height="300"> 
 <h3>confusion matrix for validation set</h3>
 <img src="https://raw.githubusercontent.com/rastislavkopal/brain-tumor-pretrained/master/graphs/cm_val_data_bt.png" alt="" width="auto" height="300"> 
 <h3>confusion matrix for test set</h3>
