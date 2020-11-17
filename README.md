@@ -60,3 +60,18 @@ Epoch 10/120
 
 <b>loss at test dataset: 0.46<br>
 accuracy at test dataset: 0.85</b>
+<hr>
+<h3>After improvements</h3>
+<p>
+poch 20/20
+50/50 [==============================] - 16s 327ms/step - loss: 0.8566 - accuracy: 0.8908 - val_loss: 1.2597 - val_accuracy: 0.9281<br>
+Time needed for training:  331.61661171913147 s.<br>
+Val Accuracy = 0.92<br>
+Test Accuracy = 0.96
+</p>
+<h3>After cropped images (contour)</h3>
+Epoch 20/20
+50/50 [==============================] - 17s 335ms/step - loss: 0.9749 - accuracy: 0.8982 - val_loss: 2.7541 - val_accuracy: 0.9144<br>
+Time needed for training:  336.28277111053467 s.<br>
+Val Accuracy = 0.92<br>
+Test Accuracy = 0.95<br>

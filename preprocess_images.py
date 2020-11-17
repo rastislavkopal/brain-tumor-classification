@@ -11,7 +11,7 @@ import imutils
 import matplotlib.pyplot as plt
 
 # load the image, convert it to grayscale, and blur it slightly
-imgPath="/home/rastislav/Desktop/bp/brain_tumor_vgg/dataset/train/yes/Y29.jpg"
+imgPath="/home/rastislav/Desktop/bp/brain_tumor_vgg/dataset-bigger-spl/train/no/2.jpg"
 
 image = cv2.imread(imgPath)
 grayImage = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
@@ -90,7 +90,7 @@ ax5.set_yticks([])
 ax5.imshow(thresh2)
 
 ax6=fig.add_subplot(2,3,6)
-ax6.set_title("6: Added diletation")
+ax6.set_title("6: Added dilatition")
 ax6.set_xticks([])
 ax6.set_yticks([])
 ax6.imshow(thresh)

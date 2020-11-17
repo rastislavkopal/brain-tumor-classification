@@ -1,0 +1,4 @@
+dir_to_ignore/cropped-bg/
+dir_to_ignore/cropped/
+dir_to_ignore/dataset/
+dir_to_ignore/dataset-bigger-spl/
