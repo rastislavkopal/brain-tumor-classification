@@ -62,6 +62,18 @@ Epoch 10/120
 accuracy at test dataset: 0.85</b>
 <hr>
 <h3>After improvements</h3>
+<h2>Cropped image based on extreme points with OpenCV - remove background</h2>
+Adding filters to image:<br>
+<img src="https://raw.githubusercontent.com/rastislavkopal/brain-tumor-pretrained/master/graphs/contouring_progress.png" alt="" width="auto" height="300"> 
+Find biggest contour:<br>
+<img src="https://raw.githubusercontent.com/rastislavkopal/brain-tumor-pretrained/master/graphs/contour_found.png" alt="" width="auto" height="300"> 
+Crop using extreme points:<br>
+<img src="https://raw.githubusercontent.com/rastislavkopal/brain-tumor-pretrained/master/graphs/contoured_cropped.png" alt="" width="auto" height="300"> <br>
+Images preview before any changes:<br>
+<img src="https://raw.githubusercontent.com/rastislavkopal/brain-tumor-pretrained/master/graphs/preview_images_no.png" alt="" width="100%" max-height="300"> 
+Preview cropped image:<br>
+<img src="https://raw.githubusercontent.com/rastislavkopal/brain-tumor-pretrained/master/graphs/preview_images_no_cropped.png" alt="" width="100%" max-height="300"> 
+
 <p>
 poch 20/20
 50/50 [==============================] - 16s 327ms/step - loss: 0.8566 - accuracy: 0.8908 - val_loss: 1.2597 - val_accuracy: 0.9281<br>
