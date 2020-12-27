@@ -1,5 +1,5 @@
-# brain-tumor-pretrained
-<h2>Brain tumor detection using VGG16 and smaller dataset</h2>
+# brain-tumor
+<h2>Brain tumor classification, VGG16 on smaller dataset</h2>
 
 <p>Number of images:<p>
 <img src="https://raw.githubusercontent.com/rastislavkopal/brain-tumor-pretrained/master/graphs/num_images.png" alt="Number of images" width="auto" height="300"> 
